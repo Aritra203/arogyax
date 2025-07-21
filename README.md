@@ -74,18 +74,5 @@ Follow these instructions to set up the project locally.
 # Topics
 Hospital Management, MERN Stack, MongoDB, Express.js, React, Node.js, Healthcare App, Patient Records, Appointments.
 
-# Contributors
-Niraj Kumar [Github](https://github.com/meniraj07)
-
-# Deployment Links
-[Arogya X Backend](https://arogyax-backend.onrender.com)
-
-[Arogya X Patient Panel](https://arogya-x-patient-panel.vercel.app/)
-
-[Arogya X Admin/Doctor Panel](https://arogya-x-admin-panel.vercel.app/)
-
-# Contact
-For any questions or feedback, please contact [Niraj Kumar](https://www.linkedin.com/in/nirajkumar-nk/)
-
 # License
 This project is licensed under the MIT License.
