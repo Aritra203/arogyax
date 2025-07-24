@@ -25,7 +25,11 @@ const connectDB = async () => {
         console.log("🔄 Attempting to connect to MongoDB...")
         console.log("MongoDB URI:", process.env.MONGODB_URI ? "Found" : "Not found")
         
-        const mongoUri = process.env.MONGODB_URI || "mongodb+srv://konararitra72:XiTb94C0YnzpSoZF@cluster0.ytqf9zk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        const mongoUri = process.env.MONGODB_URI
+        
+        if (!mongoUri) {
+            throw new Error("MONGODB_URI environment variable is not set")
+        }
         
         await mongoose.connect(mongoUri, options)
         
