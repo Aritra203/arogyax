@@ -12,6 +12,7 @@ const DoctorContextProvider = (props) => {
 
     const [dToken, setDToken] = useState(localStorage.getItem('dToken') ? localStorage.getItem('dToken') : '')
     const [appointments, setAppointments] = useState([])
+    const [admissions, setAdmissions] = useState([])
     const [dashData, setDashData] = useState(false)
     const [profileData, setProfileData] = useState(false)
 
@@ -57,15 +58,14 @@ const DoctorContextProvider = (props) => {
             if (data.success) {
                 toast.success(data.message)
                 getAppointments()
-                // Later after creating getDashData Function
                 getDashData()
             } else {
                 toast.error(data.message)
             }
 
         } catch (error) {
-            console.log(error)
             toast.error(error.message)
+            console.log(error)
         }
 
     }
@@ -80,7 +80,6 @@ const DoctorContextProvider = (props) => {
             if (data.success) {
                 toast.success(data.message)
                 getAppointments()
-                // Later after creating getDashData Function
                 getDashData()
             } else {
                 toast.error(data.message)
@@ -93,7 +92,7 @@ const DoctorContextProvider = (props) => {
 
     }
 
-    // Getting Doctor Dashboard data from Database using API
+    // Getting Doctor Dashboard data using API
     const getDashData = async () => {
 
         try {
@@ -113,6 +112,28 @@ const DoctorContextProvider = (props) => {
 
     }
 
+    // Getting Doctor admissions data from Database using API
+    const getAdmissions = async () => {
+        try {
+            if (!profileData || !profileData._id) {
+                toast.error('Doctor profile not loaded')
+                return
+            }
+
+            const { data } = await axios.get(backendUrl + `/api/doctor/admissions/${profileData._id}`, { headers: { dToken } })
+
+            if (data.success) {
+                setAdmissions(data.admissions)
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+
     const value = {
         dToken, setDToken, backendUrl,
         appointments,
@@ -122,6 +143,8 @@ const DoctorContextProvider = (props) => {
         dashData, getDashData,
         profileData, setProfileData,
         getProfileData,
+        admissions,
+        getAdmissions,
     }
 
     return (

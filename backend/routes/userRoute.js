@@ -1,5 +1,6 @@
 import express from 'express';
-import { loginUser, registerUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment, paymentRazorpay, verifyRazorpay, paymentStripe, verifyStripe, paymentDummy } from '../controllers/userController.js';
+import { loginUser, registerUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment, paymentRazorpay, verifyRazorpay, paymentStripe, verifyStripe, paymentDummy, getUserBills, payBill } from '../controllers/userController.js';
+import { getMyAdmissions } from '../controllers/admissionController.js';
 import upload from '../middleware/multer.js';
 import authUser from '../middleware/authUser.js';
 const userRouter = express.Router();
@@ -17,5 +18,8 @@ userRouter.post("/verifyRazorpay", authUser, verifyRazorpay)
 userRouter.post("/payment-stripe", authUser, paymentStripe)
 userRouter.post("/verifyStripe", authUser, verifyStripe)
 userRouter.post("/payment-dummy", authUser, paymentDummy)
+userRouter.get("/bills", authUser, getUserBills)
+userRouter.post("/pay-bill", authUser, payBill)
+userRouter.get("/admissions", authUser, getMyAdmissions)
 
 export default userRouter;

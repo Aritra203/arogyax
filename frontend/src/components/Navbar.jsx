@@ -36,25 +36,31 @@ const Navbar = () => {
           <li className='py-1'>CONTACT</li>
           <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' />
         </NavLink>
-        <li 
+        {/* <li 
           onClick={() => window.open('http://localhost:5174/', '_blank')} 
           className='py-1 cursor-pointer bg-gradient-to-r from-primary to-blue-600 text-white px-4 rounded-full hover:from-blue-600 hover:to-primary transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg'
         >
           ADMIN PANEL
           <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' />
-        </li>
+        </li> */}
       </ul>
 
       <div className='flex items-center gap-4 '>
         {
           token && userData
             ? <div className='flex items-center gap-2 cursor-pointer group relative'>
-              <img className='w-8 rounded-full' src={userData.image} alt="" />
+              <img 
+                className='w-8 rounded-full' 
+                src={userData.image && userData.image.length > 20 ? userData.image : assets.upload_area} 
+                alt="Profile" 
+                onError={(e) => { e.target.src = assets.upload_area; }} 
+              />
               <img className='w-2.5' src={assets.dropdown_icon} alt="" />
               <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
                 <div className='min-w-48 bg-gray-50 rounded flex flex-col gap-4 p-4'>
                   <p onClick={() => navigate('/my-profile')} className='hover:text-black cursor-pointer'>My Profile</p>
                   <p onClick={() => navigate('/my-appointments')} className='hover:text-black cursor-pointer'>My Appointments</p>
+                  <p onClick={() => navigate('/my-bills')} className='hover:text-black cursor-pointer'>My Bills</p>
                   <p onClick={logout} className='hover:text-black cursor-pointer'>Logout</p>
                 </div>
               </div>

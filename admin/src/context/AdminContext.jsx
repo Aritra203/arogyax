@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 
 export const AdminContext = createContext()
@@ -8,6 +9,7 @@ export const AdminContext = createContext()
 const AdminContextProvider = (props) => {
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL
+    console.log('Backend URL in AdminContext:', backendUrl)
 
     const [aToken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '')
 
@@ -113,6 +115,7 @@ const AdminContextProvider = (props) => {
 
     const value = {
         aToken, setAToken,
+        backendUrl,
         doctors,
         getAllDoctors,
         changeAvailability,
@@ -130,5 +133,9 @@ const AdminContextProvider = (props) => {
     )
 
 }
+
+AdminContextProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};
 
 export default AdminContextProvider

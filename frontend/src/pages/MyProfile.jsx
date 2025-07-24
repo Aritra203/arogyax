@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { assets } from '../assets/assets'
+import AdmissionHistory from '../components/AdmissionHistory'
 
 const MyProfile = () => {
 
@@ -51,12 +52,22 @@ const MyProfile = () => {
             {isEdit
                 ? <label htmlFor='image' >
                     <div className='inline-block relative cursor-pointer'>
-                        <img className='w-36 rounded opacity-75' src={image ? URL.createObjectURL(image) : userData.image} alt="" />
+                        <img 
+                            className='w-36 rounded opacity-75' 
+                            src={image ? URL.createObjectURL(image) : (userData.image && userData.image.length > 20 ? userData.image : assets.upload_area)} 
+                            alt="Profile"
+                            onError={(e) => { e.target.src = assets.upload_area; }}
+                        />
                         <img className='w-10 absolute bottom-12 right-12' src={image ? '' : assets.upload_icon} alt="" />
                     </div>
                     <input onChange={(e) => setImage(e.target.files[0])} type="file" id="image" hidden />
                 </label>
-                : <img className='w-36 rounded' src={userData.image} alt="" />
+                : <img 
+                    className='w-36 rounded' 
+                    src={userData.image && userData.image.length > 20 ? userData.image : assets.upload_area} 
+                    alt="Profile"
+                    onError={(e) => { e.target.src = assets.upload_area; }}
+                  />
             }
 
             {isEdit
@@ -120,6 +131,15 @@ const MyProfile = () => {
                     : <button onClick={() => setIsEdit(true)} className='border border-primary px-8 py-2 rounded-full hover:bg-primary hover:text-white transition-all'>Edit</button>
                 }
 
+            </div>
+            
+            {/* Admission History Section */}
+            <div className="mt-10">
+                <AdmissionHistory 
+                    backendUrl={backendUrl}
+                    token={token}
+                    title="My Admissions"
+                />
             </div>
         </div>
     ) : null

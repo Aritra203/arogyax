@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { assets } from '../assets/assets'
 import { NavLink } from 'react-router-dom'
 import { DoctorContext } from '../context/DoctorContext'
@@ -28,6 +28,26 @@ const Sidebar = () => {
         <NavLink to={'/doctor-list'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
           <img className='min-w-5' src={assets.people_icon} alt='' />
           <p className='hidden md:block'>Doctors List</p>
+        </NavLink>
+        <NavLink to={'/staff-management'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.people_icon} alt='' />
+          <p className='hidden md:block'>Staff Management</p>
+        </NavLink>
+        <NavLink to={'/inventory-management'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.list_icon} alt='' />
+          <p className='hidden md:block'>Inventory</p>
+        </NavLink>
+        <NavLink to={'/billing-management'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.earning_icon} alt='' />
+          <p className='hidden md:block'>Billing</p>
+        </NavLink>
+        <NavLink to={'/admission-management'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.patients_icon} alt='' />
+          <p className='hidden md:block'>Admissions</p>
+        </NavLink>
+        <NavLink to={'/reporting-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.list_icon} alt='' />
+          <p className='hidden md:block'>Reports</p>
         </NavLink>
       </ul>}
 

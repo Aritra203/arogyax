@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import { v2 as cloudinary } from "cloudinary";
 import userModel from "../models/userModel.js";
+import staffModel from "../models/staffModel.js";
 
 // API for admin login
 const loginAdmin = async (req, res) => {
@@ -148,11 +149,89 @@ const adminDashboard = async (req, res) => {
     }
 }
 
+// API to get all users/patients list
+const allUsers = async (req, res) => {
+    try {
+        const users = await userModel.find({}).select('-password')
+        res.json({ success: true, users })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// API to add staff member
+const addStaff = async (req, res) => {
+    try {
+        const { 
+            name, email, phone, role, department,
+            qualification, experience, salary,
+            address, emergencyContact 
+        } = req.body
+        const imageFile = req.file
+
+        // Check for all data to add staff
+        if (!name || !email || !phone || !role || !department || 
+            !qualification || !experience || !salary || 
+            !address || !emergencyContact) {
+            return res.json({ success: false, message: 'Missing Details' })
+        }
+
+        // Validating email format
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: "Please enter a valid email" })
+        }
+
+        // Check if staff with same email already exists
+        const existingStaff = await staffModel.findOne({ email })
+        if (existingStaff) {
+            return res.json({ success: false, message: "Staff member with this email already exists" })
+        }
+
+        // Generate unique employee ID
+        const staffCount = await staffModel.countDocuments()
+        const employeeId = `EMP${(staffCount + 1).toString().padStart(4, '0')}`
+
+        const staffData = {
+            name,
+            email,
+            phone,
+            role,
+            department,
+            employeeId,
+            dateOfJoining: new Date(),
+            qualification,
+            experience: Number(experience),
+            salary: Number(salary),
+            address: JSON.parse(address),
+            emergencyContact: JSON.parse(emergencyContact),
+            status: 'Active'
+        }
+
+        if (imageFile) {
+            // Upload image to cloudinary
+            const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" })
+            staffData.image = imageUpload.secure_url
+        }
+
+        const newStaff = new staffModel(staffData)
+        await newStaff.save()
+
+        res.json({ success: true, message: 'Staff member added successfully' })
+
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
 export {
     loginAdmin,
     appointmentsAdmin,
     appointmentCancel,
     addDoctor,
     allDoctors,
-    adminDashboard
+    adminDashboard,
+    allUsers,
+    addStaff
 }

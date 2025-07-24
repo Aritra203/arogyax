@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { DoctorContext } from '../../context/DoctorContext'
 import { AppContext } from '../../context/AppContext'
 import { toast } from 'react-toastify'
@@ -6,7 +6,7 @@ import axios from 'axios'
 
 const DoctorProfile = () => {
 
-    const { dToken, profileData, setProfileData, getProfileData } = useContext(DoctorContext)
+    const { dToken, profileData, setProfileData, getProfileData, admissions, getAdmissions } = useContext(DoctorContext)
     const { currency, backendUrl } = useContext(AppContext)
     const [isEdit, setIsEdit] = useState(false)
 
@@ -44,7 +44,18 @@ const DoctorProfile = () => {
         if (dToken) {
             getProfileData()
         }
-    }, [dToken])
+        if (profileData && profileData._id) {
+            getAdmissions()
+        }
+    }, [dToken, profileData?._id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        })
+    }
 
     return profileData && (
         <div>
@@ -99,6 +110,68 @@ const DoctorProfile = () => {
                             : <button onClick={() => setIsEdit(prev => !prev)} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Edit</button>
                     }
 
+                </div>
+                
+                {/* Admissions Handled Section */}
+                <div className="bg-white border border-stone-100 rounded-lg p-8">
+                    <h3 className="text-xl font-medium text-gray-700 mb-4">Admissions Handled</h3>
+                    
+                    {admissions && admissions.length > 0 ? (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b border-gray-200">
+                                        <th className="text-left py-2 px-3">Patient Name</th>
+                                        <th className="text-left py-2 px-3">Admission ID</th>
+                                        <th className="text-left py-2 px-3">Date</th>
+                                        <th className="text-left py-2 px-3">Role</th>
+                                        <th className="text-left py-2 px-3">Status</th>
+                                        <th className="text-left py-2 px-3">Department</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {admissions.map((admission, index) => (
+                                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                                            <td className="py-3 px-3 font-medium text-gray-800">
+                                                {admission.patientName}
+                                            </td>
+                                            <td className="py-3 px-3 text-gray-600">
+                                                {admission.admissionId}
+                                            </td>
+                                            <td className="py-3 px-3 text-gray-600">
+                                                {formatDate(admission.admissionDate)}
+                                            </td>
+                                            <td className="py-3 px-3">
+                                                <span className={`px-2 py-1 rounded text-xs text-white ${
+                                                    admission.doctorRole === 'Admitting Physician' ? 'bg-blue-500' : 'bg-green-500'
+                                                }`}>
+                                                    {admission.doctorRole || 'Attending Physician'}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-3">
+                                                <span className={`px-2 py-1 rounded text-xs ${
+                                                    admission.status === 'Admitted' ? 'bg-green-100 text-green-600' :
+                                                    admission.status === 'Discharged' ? 'bg-blue-100 text-blue-600' :
+                                                    admission.status === 'Cancelled' ? 'bg-red-100 text-red-600' :
+                                                    'bg-yellow-100 text-yellow-600'
+                                                }`}>
+                                                    {admission.status}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-3 text-gray-600">
+                                                {admission.department}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-gray-500">
+                            <p>No admissions handled yet</p>
+                            <p className="text-sm">Admissions where you are the admitting or attending physician will appear here.</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

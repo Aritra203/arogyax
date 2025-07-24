@@ -23,7 +23,11 @@ const connectDB = async () => {
         })
 
         console.log("🔄 Attempting to connect to MongoDB...")
-        await mongoose.connect(process.env.MONGODB_URI, options)
+        console.log("MongoDB URI:", process.env.MONGODB_URI ? "Found" : "Not found")
+        
+        const mongoUri = process.env.MONGODB_URI || "mongodb+srv://konararitra72:XiTb94C0YnzpSoZF@cluster0.ytqf9zk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        
+        await mongoose.connect(mongoUri, options)
         
     } catch (error) {
         console.log("❌ MongoDB connection failed:", error.message)
