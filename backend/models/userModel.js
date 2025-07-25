@@ -9,6 +9,125 @@ const userSchema = new mongoose.Schema({
     gender: { type: String, default: 'Not Selected' },
     dob: { type: String, default: 'Not Selected' },
     password: { type: String, required: true },
+    
+    // Emergency Contact Information
+    emergencyContact: {
+        name: { type: String, default: '' },
+        relationship: { type: String, default: '' },
+        phone: { type: String, default: '' },
+        email: { type: String, default: '' },
+        address: { type: String, default: '' }
+    },
+    
+    // Government-issued ID (optional)
+    governmentId: {
+        type: { 
+            type: String, 
+            enum: ['Passport', 'Driver License', 'National ID', 'SSN', 'Other', ''],
+            default: '' 
+        },
+        number: { type: String, default: '' },
+        issuedDate: { type: String, default: '' },
+        expiryDate: { type: String, default: '' },
+        issuingAuthority: { type: String, default: '' }
+    },
+    
+    // Medical History
+    medicalHistory: {
+        chronicIllnesses: [{ 
+            condition: { type: String },
+            diagnosedDate: { type: String },
+            severity: { type: String, enum: ['Mild', 'Moderate', 'Severe', ''] },
+            notes: { type: String }
+        }],
+        allergies: [{ 
+            allergen: { type: String },
+            reaction: { type: String },
+            severity: { type: String, enum: ['Mild', 'Moderate', 'Severe', ''] },
+            notes: { type: String }
+        }],
+        surgeries: [{ 
+            procedure: { type: String },
+            date: { type: String },
+            hospital: { type: String },
+            surgeon: { type: String },
+            notes: { type: String }
+        }],
+        familyHistory: { type: String, default: '' },
+        otherConditions: { type: String, default: '' }
+    },
+    
+    // Current Medications
+    currentMedications: [{
+        medicationName: { type: String },
+        dosage: { type: String },
+        frequency: { type: String },
+        prescribedBy: { type: String },
+        startDate: { type: String },
+        endDate: { type: String },
+        notes: { type: String },
+        isActive: { type: Boolean, default: true }
+    }],
+    
+    // Insurance Provider and Policy Details
+    insurance: {
+        hasInsurance: { type: Boolean, default: false },
+        primaryInsurance: {
+            provider: { type: String, default: '' },
+            policyNumber: { type: String, default: '' },
+            groupNumber: { type: String, default: '' },
+            policyHolderName: { type: String, default: '' },
+            policyHolderRelation: { type: String, default: '' },
+            effectiveDate: { type: String, default: '' },
+            expiryDate: { type: String, default: '' },
+            copayAmount: { type: Number, default: 0 },
+            deductible: { type: Number, default: 0 }
+        },
+        secondaryInsurance: {
+            provider: { type: String, default: '' },
+            policyNumber: { type: String, default: '' },
+            groupNumber: { type: String, default: '' },
+            policyHolderName: { type: String, default: '' },
+            policyHolderRelation: { type: String, default: '' },
+            effectiveDate: { type: String, default: '' },
+            expiryDate: { type: String, default: '' }
+        }
+    },
+    
+    // Referral Doctor/Source
+    referral: {
+        type: { 
+            type: String, 
+            enum: ['Doctor', 'Hospital', 'Clinic', 'Insurance', 'Friend/Family', 'Online', 'Advertisement', 'Other', ''],
+            default: '' 
+        },
+        doctorName: { type: String, default: '' },
+        doctorSpecialty: { type: String, default: '' },
+        hospitalName: { type: String, default: '' },
+        contactInfo: { type: String, default: '' },
+        referralDate: { type: String, default: '' },
+        reason: { type: String, default: '' },
+        notes: { type: String, default: '' }
+    },
+    
+    // Additional Profile Information
+    bloodType: { 
+        type: String, 
+        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', ''],
+        default: '' 
+    },
+    height: { type: String, default: '' },
+    weight: { type: String, default: '' },
+    occupation: { type: String, default: '' },
+    maritalStatus: { 
+        type: String, 
+        enum: ['Single', 'Married', 'Divorced', 'Widowed', 'Other', ''],
+        default: '' 
+    },
+    
+    // Profile timestamps
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 })
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);

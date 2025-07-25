@@ -108,17 +108,64 @@ const updateProfile = async (req, res) => {
 
     try {
 
-        const { userId, name, phone, address, dob, gender } = req.body
+        const { 
+            userId, name, phone, address, dob, gender, 
+            emergencyContact, governmentId, medicalHistory, 
+            currentMedications, insurance, referral, 
+            bloodType, height, weight, occupation, maritalStatus,
+            currentMedicationsText
+        } = req.body
         const imageFile = req.file
 
         if (!name || !phone || !dob || !gender) {
-            return res.json({ success: false, message: "Data Missing" })
+            return res.json({ success: false, message: "Basic data missing (name, phone, dob, gender)" })
         }
 
-        await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender })
+        // Prepare update data
+        const updateData = {
+            name, 
+            phone, 
+            address: address ? JSON.parse(address) : undefined, 
+            dob, 
+            gender,
+            bloodType: bloodType || '',
+            height: height || '',
+            weight: weight || '',
+            occupation: occupation || '',
+            maritalStatus: maritalStatus || '',
+            currentMedicationsText: currentMedicationsText || '',
+            updatedAt: new Date()
+        }
+
+        // Parse JSON fields if they exist
+        if (emergencyContact) {
+            updateData.emergencyContact = JSON.parse(emergencyContact)
+        }
+        
+        if (governmentId) {
+            updateData.governmentId = JSON.parse(governmentId)
+        }
+        
+        if (medicalHistory) {
+            updateData.medicalHistory = JSON.parse(medicalHistory)
+        }
+        
+        if (currentMedications) {
+            updateData.currentMedications = JSON.parse(currentMedications)
+        }
+        
+        if (insurance) {
+            updateData.insurance = JSON.parse(insurance)
+        }
+        
+        if (referral) {
+            updateData.referral = JSON.parse(referral)
+        }
+
+        // Update user profile
+        await userModel.findByIdAndUpdate(userId, updateData)
 
         if (imageFile) {
-
             // upload image to cloudinary
             const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" })
             const imageURL = imageUpload.secure_url
@@ -126,7 +173,7 @@ const updateProfile = async (req, res) => {
             await userModel.findByIdAndUpdate(userId, { image: imageURL })
         }
 
-        res.json({ success: true, message: 'Profile Updated' })
+        res.json({ success: true, message: 'Profile Updated Successfully' })
 
     } catch (error) {
         console.log(error)
