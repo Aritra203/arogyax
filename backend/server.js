@@ -28,7 +28,56 @@ connectCloudinary()
 
 // middlewares
 app.use(express.json())
-app.use(cors())
+
+// CORS configuration
+const corsOptions = {
+    origin: function (origin, callback) {
+        console.log('CORS request from origin:', origin);
+        
+        // Allow requests with no origin (like mobile apps or Postman)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'http://localhost:5173',  // Admin panel local
+            'http://localhost:5174',  // Frontend local
+            'https://arogyax.vercel.app',  // Frontend production
+            'https://arogyax-admin.vercel.app',  // Admin panel production
+            'https://arogya-x-admin.vercel.app',  // Alternative admin domain
+            'https://arogya-x.vercel.app',  // Alternative frontend domain
+            'https://arogyax-frontend.vercel.app',  // Alternative frontend domain
+            'https://arogyax-admin.onrender.com',  // Admin on Render
+            'https://arogya-x-backend.onrender.com',  // Backend on Render
+            'https://arogyax-frontend.onrender.com'  // Frontend on Render
+        ];
+        
+        // Check if origin is in allowed list
+        if (allowedOrigins.includes(origin)) {
+            console.log('✅ Origin allowed (in allowedOrigins):', origin);
+            return callback(null, true);
+        }
+        
+        // Allow any Vercel deployment of arogyax
+        if (origin && (origin.includes('arogyax') || origin.includes('arogya-x')) && origin.includes('vercel.app')) {
+            console.log('✅ Origin allowed (Vercel arogyax):', origin);
+            return callback(null, true);
+        }
+        
+        // For development, allow localhost on any port
+        if (origin && origin.includes('localhost')) {
+            console.log('✅ Origin allowed (localhost):', origin);
+            return callback(null, true);
+        }
+        
+        console.log('❌ Origin blocked:', origin);
+        return callback(new Error('Not allowed by CORS'), false);
+    },
+    credentials: true,  // Allow credentials (cookies, authorization headers)
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token'],
+    optionsSuccessStatus: 200  // For legacy browser support
+}
+
+app.use(cors(corsOptions))
 
 // api endpoints
 app.use("/api/user", userRouter)
@@ -43,6 +92,16 @@ app.use("/api/prescription", prescriptionRouter)
 
 app.get("/", (req, res) => {
   res.send("API Working")
+});
+
+// Health check endpoint for CORS testing
+app.get("/api/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "Server is running and CORS is configured",
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin || 'No origin header'
+  });
 });
 
 app.listen(port, () => console.log(`Server started on PORT:${port}`))
