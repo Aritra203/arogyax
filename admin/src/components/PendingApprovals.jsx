@@ -1,298 +1,85 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect, useContext } from 'react';
 import { AdminContext } from '../context/AdminContext';
-import { DoctorContext } from '../context/DoctorContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const PendingApprovals = ({ userType = 'admin' }) => {
-    const adminContext = useContext(AdminContext);
-    const doctorContext = useContext(DoctorContext);
-    
-    // Use appropriate context based on user type
-    const { backendUrl, aToken, dToken } = userType === 'admin' ? adminContext : doctorContext;
-    const token = userType === 'admin' ? aToken : dToken;
-    
-    const [pendingSessions, setPendingSessions] = useState([]);
+const PendingApprovals = () => {
+    const { backendUrl, aToken } = useContext(AdminContext);
+    const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [selectedSession, setSelectedSession] = useState(null);
-    const [showApprovalModal, setShowApprovalModal] = useState(false);
-    const [actionType, setActionType] = useState(''); // 'approve' or 'reject'
-    const [notes, setNotes] = useState('');
 
-    const fetchPendingSessions = useCallback(async () => {
+    const fetchSessions = async () => {
+        if (!aToken || !backendUrl) return;
+        setLoading(true);
         try {
-            setLoading(true);
-            const endpoint = '/api/telemedicine/pending-sessions';
-                
-            const response = await axios.get(backendUrl + endpoint, {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await axios.get(backendUrl + '/api/telemedicine/pending-sessions', {
+                headers: { Authorization: 'Bearer ' + aToken }
             });
-
-            if (response.data.success) {
-                console.log('Pending sessions data:', response.data.sessions);
-                // Filter out any sessions with missing patient or doctor data
-                const validSessions = response.data.sessions.filter(session => {
-                    if (!session.patient || !session.doctor) {
-                        console.warn('Session with missing data:', session);
-                        return false;
-                    }
-                    return true;
-                });
-                setPendingSessions(validSessions);
-            } else {
-                toast.error('Failed to fetch pending sessions');
-            }
+            const validSessions = response.data.sessions ? response.data.sessions.filter(s => s && s._id) : [];
+            setSessions(validSessions);
         } catch (error) {
-            console.error('Error fetching pending sessions:', error);
-            toast.error('Error loading pending sessions');
-        } finally {
-            setLoading(false);
+            console.error('Error:', error);
+            toast.error('Failed to load sessions');
+            setSessions([]);
         }
-    }, [backendUrl, token]);
+        setLoading(false);
+    };
+
+    const handleAction = async (sessionId, action) => {
+        if (!sessionId) return;
+        try {
+            await axios.patch(backendUrl + '/api/telemedicine/admin/' + action + '-session/' + sessionId, 
+                { notes: action + 'd by admin' },
+                { headers: { Authorization: 'Bearer ' + aToken } }
+            );
+            toast.success('Session ' + action + 'd successfully');
+            fetchSessions();
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Failed to ' + action + ' session');
+        }
+    };
 
     useEffect(() => {
-        if (token) {
-            fetchPendingSessions();
-        }
-    }, [token, fetchPendingSessions]);
+        fetchSessions();
+    }, [aToken, backendUrl]);
 
-    const handleSessionAction = (session, action) => {
-        try {
-            if (!session || !session._id) {
-                console.error('Invalid session data passed to handleSessionAction:', session);
-                toast.error('Invalid session data');
-                return;
-            }
-            setSelectedSession(session);
-            setActionType(action);
-            setShowApprovalModal(true);
-        } catch (error) {
-            console.error('Error in handleSessionAction:', error, session);
-            toast.error('Error processing session action');
-        }
-    };
+    if (loading) return React.createElement('div', { className: 'p-6' }, 'Loading sessions...');
 
-    const submitAction = async () => {
-        if (!selectedSession || !selectedSession._id) {
-            toast.error('Session data is missing');
-            return;
-        }
-
-        try {
-            const endpoint = userType === 'admin' 
-                ? `/api/telemedicine/admin/${actionType}-session/${selectedSession._id}`
-                : `/api/telemedicine/doctor/${actionType}-session/${selectedSession._id}`;
-
-            const response = await axios.patch(backendUrl + endpoint, {
-                notes
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (response.data.success) {
-                toast.success(`Session ${actionType}d successfully`);
-                fetchPendingSessions();
-                setShowApprovalModal(false);
-                setNotes('');
-                setSelectedSession(null);
-            } else {
-                toast.error(response.data.message || `Failed to ${actionType} session`);
-            }
-        } catch (error) {
-            console.error(`Error ${actionType}ing session:`, error);
-            toast.error(`Error ${actionType}ing session`);
-        }
-    };
-
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
-        );
-    }
-
-    return (
-        <div className="w-full max-w-6xl m-5">
-            <div className="bg-white border rounded-lg shadow-sm">
-                <div className="p-6 border-b">
-                    <h2 className="text-2xl font-semibold text-gray-800">
-                        Pending Telemedicine Approvals
-                    </h2>
-                    <p className="text-gray-600 mt-1">
-                        Review and approve/reject telemedicine session requests
-                    </p>
-                </div>
-
-                {pendingSessions.length === 0 ? (
-                    <div className="p-8 text-center">
-                        <div className="text-gray-400 text-lg">No pending approvals</div>
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Patient
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Doctor
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Session Type
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Date & Time
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {pendingSessions.filter(session => {
-                                    // Comprehensive safety check
-                                    return session && 
-                                           typeof session === 'object' &&
-                                           session._id && 
-                                           session.patient && 
-                                           typeof session.patient === 'object' &&
-                                           session.patient._id &&
-                                           session.doctor && 
-                                           typeof session.doctor === 'object' &&
-                                           session.doctor._id;
-                                }).map((session) => (
-                                    <tr key={session._id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {session.patient?.name || 'N/A'}
-                                            </div>
-                                            <div className="text-sm text-gray-500">
-                                                {session.patient?.email || 'N/A'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {session.doctor?.name || 'N/A'}
-                                            </div>
-                                            <div className="text-sm text-gray-500">
-                                                {session.doctor?.speciality || 'N/A'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
-                                                {session.sessionType}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {formatDate(session.scheduledTime)}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full">
-                                                {session.sessionStatus}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                            <button
-                                                onClick={() => handleSessionAction(session, 'approve')}
-                                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-                                            >
-                                                Approve
-                                            </button>
-                                            <button
-                                                onClick={() => handleSessionAction(session, 'reject')}
-                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                                            >
-                                                Reject
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-
-            {/* Action Modal */}
-            {showApprovalModal && selectedSession && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-lg max-w-md w-full p-6">
-                        <h3 className="text-lg font-semibold mb-4">
-                            {actionType === 'approve' ? 'Approve' : 'Reject'} Session
-                        </h3>
-                        
-                        <div className="mb-4">
-                            <p className="text-sm text-gray-600 mb-2">
-                                Patient: {selectedSession?.patient?.name || 'N/A'}
-                            </p>
-                            <p className="text-sm text-gray-600 mb-2">
-                                Doctor: {selectedSession?.doctor?.name || 'N/A'}
-                            </p>
-                            <p className="text-sm text-gray-600 mb-4">
-                                Session Type: {selectedSession?.sessionType || 'N/A'}
-                            </p>
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Note (Optional)
-                            </label>
-                            <textarea
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                rows="3"
-                                placeholder={`Add a note about this ${actionType}...`}
-                            />
-                        </div>
-
-                        <div className="flex space-x-3">
-                            <button
-                                onClick={submitAction}
-                                className={`flex-1 py-2 px-4 rounded-md text-white font-medium ${
-                                    actionType === 'approve'
-                                        ? 'bg-green-600 hover:bg-green-700'
-                                        : 'bg-red-600 hover:bg-red-700'
-                                }`}
-                            >
-                                {actionType === 'approve' ? 'Approve' : 'Reject'}
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setShowApprovalModal(false);
-                                    setNotes('');
-                                    setSelectedSession(null);
-                                }}
-                                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-PendingApprovals.propTypes = {
-    userType: PropTypes.oneOf(['admin', 'doctor'])
+    return React.createElement('div', { className: 'p-6' }, [
+        React.createElement('h2', { key: 'title', className: 'text-2xl font-bold mb-6' }, 'Pending Sessions (' + sessions.length + ')'),
+        sessions.length === 0 ? 
+            React.createElement('p', { key: 'empty', className: 'text-gray-500' }, 'No pending sessions') :
+            React.createElement('div', { key: 'list', className: 'space-y-4' }, 
+                sessions.map(function(session) {
+                    const sessionId = session._id || 'unknown';
+                    const patientName = (session.patient && session.patient.name) ? session.patient.name : 'Unknown Patient';
+                    const doctorName = (session.doctor && session.doctor.name) ? session.doctor.name : 'Unknown Doctor';
+                    const sessionType = session.sessionType || 'Unknown';
+                    
+                    return React.createElement('div', { 
+                        key: sessionId, 
+                        className: 'bg-white p-4 border rounded shadow' 
+                    }, [
+                        React.createElement('p', { key: 'patient' }, React.createElement('strong', null, 'Patient: '), patientName),
+                        React.createElement('p', { key: 'doctor' }, React.createElement('strong', null, 'Doctor: '), doctorName),
+                        React.createElement('p', { key: 'type' }, React.createElement('strong', null, 'Type: '), sessionType),
+                        React.createElement('div', { key: 'actions', className: 'mt-4 space-x-2' }, [
+                            React.createElement('button', {
+                                key: 'approve',
+                                onClick: function() { handleAction(sessionId, 'approve'); },
+                                className: 'bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700'
+                            }, 'Approve'),
+                            React.createElement('button', {
+                                key: 'reject', 
+                                onClick: function() { handleAction(sessionId, 'reject'); },
+                                className: 'bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700'
+                            }, 'Reject')
+                        ])
+                    ]);
+                })
+            )
+    ]);
 };
 
 export default PendingApprovals;
