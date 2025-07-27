@@ -23,6 +23,7 @@ console.log('Environment check:')
 console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL)
 console.log('ADMIN_PASSWORD:', process.env.ADMIN_PASSWORD ? 'Set' : 'Not set')
 console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set')
+console.log('Server starting with enhanced CORS support...')
 
 connectDB()
 connectCloudinary()
