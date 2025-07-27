@@ -30,6 +30,13 @@ const DoctorTelemedicine = () => {
 
             if (data.success) {
                 setSessions(data.sessions);
+                console.log('Doctor sessions by status:', {
+                    pending: data.sessions.filter(s => s.sessionStatus === 'pending').length,
+                    approved: data.sessions.filter(s => s.sessionStatus === 'approved').length,
+                    ongoing: data.sessions.filter(s => s.sessionStatus === 'ongoing').length,
+                    completed: data.sessions.filter(s => s.sessionStatus === 'completed').length,
+                    rejected: data.sessions.filter(s => s.sessionStatus === 'rejected').length
+                });
             }
         } catch (error) {
             console.error(error);
@@ -50,6 +57,13 @@ const DoctorTelemedicine = () => {
     }, [dToken, profileData, fetchSessions]);
 
     const joinSession = (session) => {
+        // Check if session is approved
+        if (session.sessionStatus !== 'approved' && session.sessionStatus !== 'ongoing') {
+            toast.error(`Cannot join session. Status: ${session.sessionStatus}. Only approved sessions can be joined.`);
+            return;
+        }
+        
+        console.log('Doctor joining session:', session._id, 'Status:', session.sessionStatus);
         setActiveSession(session);
         setShowVideoCall(true);
     };
@@ -145,21 +159,35 @@ const DoctorTelemedicine = () => {
                             <span className={`px-2 py-1 rounded text-xs ${
                                 session.sessionStatus === 'completed' ? 'bg-green-100 text-green-600' :
                                 session.sessionStatus === 'ongoing' ? 'bg-blue-100 text-blue-600' :
-                                session.sessionStatus === 'scheduled' ? 'bg-orange-100 text-orange-600' :
-                                'bg-red-100 text-red-600'
+                                session.sessionStatus === 'approved' ? 'bg-emerald-100 text-emerald-600' :
+                                session.sessionStatus === 'pending' ? 'bg-yellow-100 text-yellow-600' :
+                                session.sessionStatus === 'rejected' ? 'bg-red-100 text-red-600' :
+                                'bg-gray-100 text-gray-600'
                             }`}>
-                                {session.sessionStatus}
+                                {session.sessionStatus.charAt(0).toUpperCase() + session.sessionStatus.slice(1)}
                             </span>
                         </p>
                         
                         <div className='flex gap-2'>
-                            {session.sessionStatus === 'scheduled' && (
+                            {(session.sessionStatus === 'approved' || session.sessionStatus === 'ongoing') && (
                                 <button 
                                     onClick={() => joinSession(session)}
-                                    className='bg-primary px-3 py-1 rounded text-white text-xs hover:bg-primary-dark'
+                                    className='bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white text-xs'
                                 >
-                                    Join
+                                    {session.sessionStatus === 'ongoing' ? 'Rejoin' : 'Join'}
                                 </button>
+                            )}
+                            
+                            {session.sessionStatus === 'pending' && (
+                                <span className='bg-yellow-100 text-yellow-600 px-3 py-1 rounded text-xs'>
+                                    ⏳ Pending Approval
+                                </span>
+                            )}
+                            
+                            {session.sessionStatus === 'rejected' && (
+                                <span className='bg-red-100 text-red-600 px-3 py-1 rounded text-xs'>
+                                    ❌ Rejected
+                                </span>
                             )}
                             
                             {session.sessionStatus === 'completed' && (
