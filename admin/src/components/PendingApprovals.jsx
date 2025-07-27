@@ -58,13 +58,26 @@ const PendingApprovals = ({ userType = 'admin' }) => {
     }, [token, fetchPendingSessions]);
 
     const handleSessionAction = (session, action) => {
-        setSelectedSession(session);
-        setActionType(action);
-        setShowApprovalModal(true);
+        try {
+            if (!session || !session._id) {
+                console.error('Invalid session data passed to handleSessionAction:', session);
+                toast.error('Invalid session data');
+                return;
+            }
+            setSelectedSession(session);
+            setActionType(action);
+            setShowApprovalModal(true);
+        } catch (error) {
+            console.error('Error in handleSessionAction:', error, session);
+            toast.error('Error processing session action');
+        }
     };
 
     const submitAction = async () => {
-        if (!selectedSession) return;
+        if (!selectedSession || !selectedSession._id) {
+            toast.error('Session data is missing');
+            return;
+        }
 
         try {
             const endpoint = userType === 'admin' 
@@ -152,7 +165,18 @@ const PendingApprovals = ({ userType = 'admin' }) => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {pendingSessions.filter(session => session && session._id && session.patient && session.doctor).map((session) => (
+                                {pendingSessions.filter(session => {
+                                    // Comprehensive safety check
+                                    return session && 
+                                           typeof session === 'object' &&
+                                           session._id && 
+                                           session.patient && 
+                                           typeof session.patient === 'object' &&
+                                           session.patient._id &&
+                                           session.doctor && 
+                                           typeof session.doctor === 'object' &&
+                                           session.doctor._id;
+                                }).map((session) => (
                                     <tr key={session._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">
@@ -215,13 +239,13 @@ const PendingApprovals = ({ userType = 'admin' }) => {
                         
                         <div className="mb-4">
                             <p className="text-sm text-gray-600 mb-2">
-                                Patient: {selectedSession.patient?.name}
+                                Patient: {selectedSession?.patient?.name || 'N/A'}
                             </p>
                             <p className="text-sm text-gray-600 mb-2">
-                                Doctor: {selectedSession.doctor?.name}
+                                Doctor: {selectedSession?.doctor?.name || 'N/A'}
                             </p>
                             <p className="text-sm text-gray-600 mb-4">
-                                Session Type: {selectedSession.sessionType}
+                                Session Type: {selectedSession?.sessionType || 'N/A'}
                             </p>
                         </div>
 
