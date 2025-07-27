@@ -140,9 +140,12 @@ const joinSession = async (req, res) => {
             return res.json({ success: false, message: "Session not found" });
         }
 
-        // Check if session is scheduled
-        if (session.sessionStatus !== 'scheduled') {
-            return res.json({ success: false, message: "Session is not available for joining" });
+        // Check if session is approved and can be joined
+        if (session.sessionStatus !== 'approved' && session.sessionStatus !== 'scheduled') {
+            return res.json({ 
+                success: false, 
+                message: `Session is ${session.sessionStatus}. Only approved sessions can be joined.` 
+            });
         }
 
         // Update session status to ongoing
@@ -220,9 +223,15 @@ const addChatMessage = async (req, res) => {
 const getPatientSessions = async (req, res) => {
     try {
         const { patientId } = req.params;
-        console.log('Fetching sessions for patient:', patientId);
+        const { status } = req.query; // Optional status filter
+        console.log('Fetching sessions for patient:', patientId, 'with status:', status);
 
-        const sessions = await telemedicineModel.find({ patient: patientId })
+        let query = { patient: patientId };
+        if (status) {
+            query.sessionStatus = status;
+        }
+
+        const sessions = await telemedicineModel.find(query)
             .populate('doctor', 'name speciality image')
             .populate('appointmentId')
             .sort({ scheduledTime: -1 });
@@ -239,8 +248,14 @@ const getPatientSessions = async (req, res) => {
 const getDoctorSessions = async (req, res) => {
     try {
         const { doctorId } = req.params;
+        const { status } = req.query; // Optional status filter
 
-        const sessions = await telemedicineModel.find({ doctor: doctorId })
+        let query = { doctor: doctorId };
+        if (status) {
+            query.sessionStatus = status;
+        }
+
+        const sessions = await telemedicineModel.find(query)
             .populate('patient', 'name email phone image')
             .populate('appointmentId')
             .sort({ scheduledTime: -1 });
