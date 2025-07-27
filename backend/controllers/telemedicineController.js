@@ -408,7 +408,33 @@ const getPendingSessions = async (req, res) => {
             .populate('patient', 'name email phone image')
             .sort({ scheduledTime: 1 });
 
-        res.json({ success: true, sessions });
+        // Filter out sessions with missing patient or doctor data (orphaned references)
+        const validSessions = sessions.filter(session => {
+            const hasValidPatient = session.patient && session.patient._id;
+            const hasValidDoctor = session.doctor && session.doctor._id;
+            
+            if (!hasValidPatient || !hasValidDoctor) {
+                console.warn('Found session with missing data:', {
+                    sessionId: session._id,
+                    hasPatient: hasValidPatient,
+                    hasDoctor: hasValidDoctor
+                });
+                return false;
+            }
+            return true;
+        });
+
+        console.log('Pending sessions found:', sessions.length);
+        console.log('Valid sessions after filtering:', validSessions.length);
+        console.log('Sample session structure:', validSessions[0] ? {
+            _id: validSessions[0]._id,
+            hasPatient: !!validSessions[0].patient,
+            hasDoctor: !!validSessions[0].doctor,
+            patientId: validSessions[0].patient?._id,
+            doctorId: validSessions[0].doctor?._id
+        } : 'No sessions');
+
+        res.json({ success: true, sessions: validSessions });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
