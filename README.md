@@ -597,7 +597,7 @@ DEBUG=false
 <br />
 <sub><b>Aritra Konar</b></sub>
 <br />
-<span>� Project Lead & Full Stack Developer</span>
+<span>🚀 Project Lead & Full Stack Developer</span>
 <br />
 <small>College Roll: 20223037</small>
 <br />
@@ -641,7 +641,7 @@ DEBUG=false
 <br />
 <sub><b>Aditi Das</b></sub>
 <br />
-<span> UI/UX Designer</span>
+<span>📊 UI/UX Designer</span>
 <br />
 <small>College Roll: 20223038</small>
 <br />
@@ -681,6 +681,7 @@ DEBUG=false
 - User experience optimization
 - Design systems and guidelines
 - Visual design and branding
+
 
 
 ## 🤝 Contributing
