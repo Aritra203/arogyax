@@ -25,7 +25,7 @@ const DoctorApprovals = () => {
                 const data = await response.json();
                 // Filter for sessions assigned to this doctor
                 const doctorSessions = data.sessions.filter(session => 
-                    session.doctorId._id === localStorage.getItem('doctorId')
+                    session.doctor._id === localStorage.getItem('doctorId')
                 );
                 setPendingSessions(doctorSessions);
             } else {
@@ -144,10 +144,10 @@ const DoctorApprovals = () => {
                                     <tr key={session._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">
-                                                {session.patientId?.name || 'N/A'}
+                                                {session.patient?.name || 'N/A'}
                                             </div>
                                             <div className="text-sm text-gray-500">
-                                                {session.patientId?.email || 'N/A'}
+                                                {session.patient?.email || 'N/A'}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -156,7 +156,7 @@ const DoctorApprovals = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {formatDate(session.sessionDate)}
+                                            {formatDate(session.scheduledTime)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className="px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full">
@@ -195,7 +195,7 @@ const DoctorApprovals = () => {
                         
                         <div className="mb-4">
                             <p className="text-sm text-gray-600 mb-2">
-                                Patient: {selectedSession?.patientId?.name}
+                                Patient: {selectedSession?.patient?.name}
                             </p>
                             <p className="text-sm text-gray-600 mb-4">
                                 Session Type: {selectedSession?.sessionType}
