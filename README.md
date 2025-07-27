@@ -615,7 +615,7 @@ DEBUG=false
 <small>University Roll: 222260240143</small>
 </td>
 <td align="center">
-<img src="https://via.placeholder.com/100x100/059669/ffffff?text=IS" width="100px;" alt="Indranil Saha"/>
+<img src="https://github.com/Indro1729.png" width="100px;" alt="Indranil Saha"/>
 <br />
 <sub><b>Indranil Saha</b></sub>
 <br />
