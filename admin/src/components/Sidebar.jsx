@@ -49,6 +49,10 @@ const Sidebar = () => {
           <img className='min-w-5' src={assets.appointment_icon} alt='' />
           <p className='hidden md:block'>Telemedicine</p>
         </NavLink>
+        <NavLink to={'/pending-approvals'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.tick_icon} alt='' />
+          <p className='hidden md:block'>Pending Approvals</p>
+        </NavLink>
         <NavLink to={'/reporting-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
           <img className='min-w-5' src={assets.list_icon} alt='' />
           <p className='hidden md:block'>Reports</p>

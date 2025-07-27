@@ -23,8 +23,8 @@ const telemedicineSchema = new mongoose.Schema({
     },
     sessionStatus: {
         type: String,
-        enum: ['scheduled', 'ongoing', 'completed', 'cancelled'],
-        default: 'scheduled'
+        enum: ['pending', 'approved', 'rejected', 'scheduled', 'ongoing', 'completed', 'cancelled'],
+        default: 'pending'
     },
     scheduledTime: {
         type: Date,

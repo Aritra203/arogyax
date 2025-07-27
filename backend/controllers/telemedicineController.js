@@ -333,6 +333,86 @@ const updateDoctorFees = async (req, res) => {
     }
 };
 
+// Approve session (Doctor/Admin)
+const approveSession = async (req, res) => {
+    try {
+        const { sessionId } = req.params;
+        const { approvalNotes } = req.body;
+
+        const session = await telemedicineModel.findByIdAndUpdate(
+            sessionId,
+            { 
+                sessionStatus: 'approved',
+                approvalNotes,
+                approvedAt: new Date(),
+                approvedBy: req.user._id || req.admin._id
+            },
+            { new: true }
+        ).populate('doctor', 'name speciality')
+        .populate('patient', 'name email phone');
+
+        if (!session) {
+            return res.json({ success: false, message: "Session not found" });
+        }
+
+        res.json({ success: true, message: "Session approved successfully", session });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// Reject session (Doctor/Admin)
+const rejectSession = async (req, res) => {
+    try {
+        const { sessionId } = req.params;
+        const { rejectionReason } = req.body;
+
+        const session = await telemedicineModel.findByIdAndUpdate(
+            sessionId,
+            { 
+                sessionStatus: 'rejected',
+                rejectionReason,
+                rejectedAt: new Date(),
+                rejectedBy: req.user._id || req.admin._id
+            },
+            { new: true }
+        ).populate('doctor', 'name speciality')
+        .populate('patient', 'name email phone');
+
+        if (!session) {
+            return res.json({ success: false, message: "Session not found" });
+        }
+
+        res.json({ success: true, message: "Session rejected", session });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// Get pending sessions for approval (Doctor/Admin)
+const getPendingSessions = async (req, res) => {
+    try {
+        let query = { sessionStatus: 'pending' };
+        
+        // If accessed by doctor, filter by their sessions
+        if (req.user && !req.admin) {
+            query.doctor = req.user._id;
+        }
+
+        const sessions = await telemedicineModel.find(query)
+            .populate('doctor', 'name speciality image email')
+            .populate('patient', 'name email phone image')
+            .sort({ scheduledTime: 1 });
+
+        res.json({ success: true, sessions });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
 export { 
     createSession,
     createDirectSession, 
@@ -345,5 +425,8 @@ export {
     rateSession,
     getAllSessions,
     cancelSession,
-    updateDoctorFees
+    updateDoctorFees,
+    approveSession,
+    rejectSession,
+    getPendingSessions
 };

@@ -16,6 +16,7 @@ import BillingManagement from './pages/Admin/BillingManagement';
 import AdmissionManagement from './pages/Admin/AdmissionManagement';
 import TelemedicineManagement from './pages/Admin/TelemedicineManagement';
 import ReportingDashboard from './pages/Admin/ReportingDashboard';
+import PendingApprovals from './components/PendingApprovals';
 import Login from './pages/Login';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorDashboard from './pages/Doctor/DoctorDashboard';
@@ -45,6 +46,7 @@ const App = () => {
           <Route path='/billing-management' element={<BillingManagement />} />
           <Route path='/admission-management' element={<AdmissionManagement />} />
           <Route path='/telemedicine-management' element={<TelemedicineManagement />} />
+          <Route path='/pending-approvals' element={<PendingApprovals />} />
           <Route path='/reporting-dashboard' element={<ReportingDashboard />} />
           <Route path='/doctor-dashboard' element={<DoctorDashboard />} />
           <Route path='/doctor-appointments' element={<DoctorAppointments />} />
