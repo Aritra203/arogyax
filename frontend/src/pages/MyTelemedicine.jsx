@@ -32,6 +32,13 @@ const MyTelemedicine = () => {
 
             if (data.success) {
                 setSessions(data.sessions);
+                console.log('Sessions by status:', {
+                    pending: data.sessions.filter(s => s.sessionStatus === 'pending').length,
+                    approved: data.sessions.filter(s => s.sessionStatus === 'approved').length,
+                    ongoing: data.sessions.filter(s => s.sessionStatus === 'ongoing').length,
+                    completed: data.sessions.filter(s => s.sessionStatus === 'completed').length,
+                    rejected: data.sessions.filter(s => s.sessionStatus === 'rejected').length
+                });
             } else {
                 toast.error(data.message || 'Failed to fetch sessions');
             }
@@ -56,6 +63,13 @@ const MyTelemedicine = () => {
     }, [token, userData, fetchSessions]);
 
     const joinSession = (session) => {
+        // Check if session is approved
+        if (session.sessionStatus !== 'approved' && session.sessionStatus !== 'ongoing') {
+            toast.error(`Cannot join session. Status: ${session.sessionStatus}. Only approved sessions can be joined.`);
+            return;
+        }
+        
+        console.log('Joining session:', session._id, 'Status:', session.sessionStatus);
         setActiveSession(session);
         setShowVideoCall(true);
     };
@@ -270,11 +284,13 @@ const MyTelemedicine = () => {
                                     </span>
                                 </p>
                                 <p className='text-zinc-700 font-medium mt-1'>
-                                    Status: <span className={`text-xs ${
-                                        session.sessionStatus === 'completed' ? 'text-green-600' :
-                                        session.sessionStatus === 'ongoing' ? 'text-blue-600' :
-                                        session.sessionStatus === 'scheduled' ? 'text-orange-600' :
-                                        'text-red-600'
+                                    Status: <span className={`text-xs px-2 py-1 rounded ${
+                                        session.sessionStatus === 'completed' ? 'bg-green-100 text-green-600' :
+                                        session.sessionStatus === 'ongoing' ? 'bg-blue-100 text-blue-600' :
+                                        session.sessionStatus === 'approved' ? 'bg-emerald-100 text-emerald-600' :
+                                        session.sessionStatus === 'pending' ? 'bg-yellow-100 text-yellow-600' :
+                                        session.sessionStatus === 'rejected' ? 'bg-red-100 text-red-600' :
+                                        'bg-gray-100 text-gray-600'
                                     }`}>
                                         {session.sessionStatus.charAt(0).toUpperCase() + session.sessionStatus.slice(1)}
                                     </span>
@@ -294,13 +310,25 @@ const MyTelemedicine = () => {
                                 )}
 
                                 <div className='flex gap-2 mt-3'>
-                                    {session.sessionStatus === 'scheduled' && (
+                                    {(session.sessionStatus === 'approved' || session.sessionStatus === 'ongoing') && (
                                         <button 
                                             onClick={() => joinSession(session)}
-                                            className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'
+                                            className='text-sm text-white bg-green-600 hover:bg-green-700 text-center sm:min-w-48 py-2 px-4 rounded transition-all duration-300'
                                         >
-                                            Join Session
+                                            {session.sessionStatus === 'ongoing' ? 'Rejoin Session' : 'Join Session'}
                                         </button>
+                                    )}
+                                    
+                                    {session.sessionStatus === 'pending' && (
+                                        <div className='text-sm text-yellow-600 bg-yellow-50 py-2 px-4 rounded'>
+                                            ⏳ Waiting for admin approval
+                                        </div>
+                                    )}
+                                    
+                                    {session.sessionStatus === 'rejected' && session.rejectionReason && (
+                                        <div className='text-sm text-red-600 bg-red-50 py-2 px-4 rounded'>
+                                            ❌ Rejected: {session.rejectionReason}
+                                        </div>
                                     )}
                                     
                                     {session.sessionStatus === 'completed' && !session.patientRating && (
