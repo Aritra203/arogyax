@@ -92,6 +92,23 @@ const MyTelemedicine = () => {
                 return;
             }
 
+            if (!selectedDoctor) {
+                toast.error('Please select a doctor');
+                return;
+            }
+
+            if (!scheduledTime) {
+                toast.error('Please select a scheduled time');
+                return;
+            }
+
+            console.log('Creating session with data:', {
+                patientId: userData._id,
+                doctorId: selectedDoctor,
+                sessionType,
+                scheduledTime: new Date(scheduledTime).toISOString()
+            });
+
             const { data } = await axios.post(`${backendUrl}/api/telemedicine/create-session`, {
                 patientId: userData._id,
                 doctorId: selectedDoctor,
@@ -101,6 +118,8 @@ const MyTelemedicine = () => {
                 headers: { token }
             });
 
+            console.log('Server response:', data);
+
             if (data.success) {
                 toast.success('Telemedicine session created successfully');
                 setShowCreateSession(false);
@@ -109,10 +128,22 @@ const MyTelemedicine = () => {
                 setSelectedDoctor('');
                 setSessionType('consultation');
                 setScheduledTime('');
+            } else {
+                toast.error(data.message || 'Failed to create session');
             }
         } catch (error) {
-            console.error(error);
-            toast.error('Failed to create session');
+            console.error('Full error:', error);
+            console.error('Error response:', error.response);
+            
+            if (error.response?.status === 404) {
+                toast.error('Telemedicine service not available. The backend may not have been updated yet.');
+            } else if (error.response?.status === 401) {
+                toast.error('Authentication failed. Please login again.');
+            } else if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('Failed to create session');
+            }
         }
     };
 
@@ -131,7 +162,13 @@ const MyTelemedicine = () => {
             <div className='flex justify-between items-center pb-3 mt-12'>
                 <p className='font-medium text-zinc-700 border-b'>My Telemedicine Sessions</p>
                 <button 
-                    onClick={() => setShowCreateSession(true)}
+                    onClick={() => {
+                        if (!doctors || doctors.length === 0) {
+                            toast.error('No doctors available. Please refresh the page.');
+                            return;
+                        }
+                        setShowCreateSession(true);
+                    }}
                     className='bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors'
                 >
                     Book New Session
@@ -143,6 +180,15 @@ const MyTelemedicine = () => {
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
                     <div className='bg-white p-6 rounded-lg max-w-md w-full mx-4'>
                         <h3 className='text-lg font-semibold mb-4'>Book Telemedicine Session</h3>
+                        
+                        {/* Debug info */}
+                        <div className='mb-4 p-2 bg-gray-100 rounded text-xs'>
+                            <p>Backend: {backendUrl}</p>
+                            <p>Available Doctors: {doctors?.length || 0}</p>
+                            <p>User ID: {userData?._id ? 'Available' : 'Missing'}</p>
+                            <p>Token: {token ? 'Available' : 'Missing'}</p>
+                        </div>
+                        
                         <form onSubmit={createNewSession}>
                             <div className='mb-4'>
                                 <label className='block text-sm font-medium mb-2'>Select Doctor</label>
