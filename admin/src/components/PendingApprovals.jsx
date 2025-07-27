@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AdminContext } from '../context/AdminContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -8,41 +8,65 @@ const PendingApprovals = () => {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const fetchSessions = async () => {
-        if (!aToken || !backendUrl) return;
+    const fetchSessions = useCallback(async () => {
+        if (!aToken || !backendUrl) {
+            console.log('Missing aToken or backendUrl:', { aToken: !!aToken, backendUrl });
+            return;
+        }
         setLoading(true);
+        console.log('Fetching sessions from:', backendUrl + '/api/telemedicine/pending-sessions');
         try {
             const response = await axios.get(backendUrl + '/api/telemedicine/pending-sessions', {
                 headers: { Authorization: 'Bearer ' + aToken }
             });
+            console.log('Fetch response:', response.data);
             const validSessions = response.data.sessions ? response.data.sessions.filter(s => s && s._id) : [];
+            console.log('Valid sessions found:', validSessions.length);
             setSessions(validSessions);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Fetch error:', error);
+            console.error('Error response:', error.response?.data);
             toast.error('Failed to load sessions');
             setSessions([]);
         }
         setLoading(false);
-    };
+    }, [aToken, backendUrl]);
 
     const handleAction = async (sessionId, action) => {
         if (!sessionId) return;
+        console.log('Attempting to', action, 'session:', sessionId);
+        console.log('Backend URL:', backendUrl);
+        console.log('Token available:', !!aToken);
+        
         try {
-            await axios.patch(backendUrl + '/api/telemedicine/admin/' + action + '-session/' + sessionId, 
+            const endpoint = backendUrl + '/api/telemedicine/admin/' + action + '-session/' + sessionId;
+            console.log('Making request to:', endpoint);
+            
+            const response = await axios.patch(endpoint, 
                 { notes: action + 'd by admin' },
                 { headers: { Authorization: 'Bearer ' + aToken } }
             );
-            toast.success('Session ' + action + 'd successfully');
-            fetchSessions();
+            
+            console.log('Response:', response.data);
+            
+            if (response.data.success) {
+                toast.success('Session ' + action + 'd successfully');
+                console.log('Refetching sessions...');
+                fetchSessions();
+            } else {
+                console.error('API returned error:', response.data.message);
+                toast.error(response.data.message || 'Failed to ' + action + ' session');
+            }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Request failed:', error);
+            console.error('Error response:', error.response?.data);
             toast.error('Failed to ' + action + ' session');
         }
     };
 
     useEffect(() => {
         fetchSessions();
-    }, [aToken, backendUrl]);
+    }, [fetchSessions]);
 
     if (loading) return React.createElement('div', { className: 'p-6' }, 'Loading sessions...');
 
