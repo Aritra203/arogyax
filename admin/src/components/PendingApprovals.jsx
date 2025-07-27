@@ -30,7 +30,16 @@ const PendingApprovals = ({ userType = 'admin' }) => {
             });
 
             if (response.data.success) {
-                setPendingSessions(response.data.sessions);
+                console.log('Pending sessions data:', response.data.sessions);
+                // Filter out any sessions with missing patient or doctor data
+                const validSessions = response.data.sessions.filter(session => {
+                    if (!session.patient || !session.doctor) {
+                        console.warn('Session with missing data:', session);
+                        return false;
+                    }
+                    return true;
+                });
+                setPendingSessions(validSessions);
             } else {
                 toast.error('Failed to fetch pending sessions');
             }
@@ -143,7 +152,7 @@ const PendingApprovals = ({ userType = 'admin' }) => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {pendingSessions.map((session) => (
+                                {pendingSessions.filter(session => session && session._id && session.patient && session.doctor).map((session) => (
                                     <tr key={session._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">
@@ -206,10 +215,10 @@ const PendingApprovals = ({ userType = 'admin' }) => {
                         
                         <div className="mb-4">
                             <p className="text-sm text-gray-600 mb-2">
-                                Patient: {selectedSession.patientId?.name}
+                                Patient: {selectedSession.patient?.name}
                             </p>
                             <p className="text-sm text-gray-600 mb-2">
-                                Doctor: {selectedSession.doctorId?.name}
+                                Doctor: {selectedSession.doctor?.name}
                             </p>
                             <p className="text-sm text-gray-600 mb-4">
                                 Session Type: {selectedSession.sessionType}
