@@ -28,8 +28,8 @@ telemedicineRouter.get('/admin/all-sessions', authAdmin, getAllSessions);
 telemedicineRouter.post('/admin/cancel-session/:sessionId', authAdmin, cancelSession);
 telemedicineRouter.post('/admin/update-doctor-fees', authAdmin, updateDoctorFees);
 telemedicineRouter.get('/admin/pending-sessions', authAdmin, getPendingSessions);
-telemedicineRouter.post('/admin/approve-session/:sessionId', authAdmin, approveSession);
-telemedicineRouter.post('/admin/reject-session/:sessionId', authAdmin, rejectSession);
+telemedicineRouter.patch('/admin/approve-session/:sessionId', authAdmin, approveSession);
+telemedicineRouter.patch('/admin/reject-session/:sessionId', authAdmin, rejectSession);
 
 // User routes
 telemedicineRouter.post('/create-session', authUser, createDirectSession);
@@ -38,8 +38,8 @@ telemedicineRouter.post('/create-session', authUser, createDirectSession);
 telemedicineRouter.get('/doctor-sessions/:doctorId', authDoctor, getDoctorSessions);
 telemedicineRouter.post('/end-session/:sessionId', authDoctor, endSession);
 telemedicineRouter.get('/doctor/pending-sessions', authDoctor, getPendingSessions);
-telemedicineRouter.post('/doctor/approve-session/:sessionId', authDoctor, approveSession);
-telemedicineRouter.post('/doctor/reject-session/:sessionId', authDoctor, rejectSession);
+telemedicineRouter.patch('/doctor/approve-session/:sessionId', authDoctor, approveSession);
+telemedicineRouter.patch('/doctor/reject-session/:sessionId', authDoctor, rejectSession);
 
 // Patient routes
 telemedicineRouter.get('/patient-sessions/:patientId', authUser, getPatientSessions);

@@ -81,7 +81,7 @@ const corsOptions = {
         return callback(new Error('Not allowed by CORS'), false);
     },
     credentials: true,  // Allow credentials (cookies, authorization headers)
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'token', 'dtoken', 'atoken', 'aToken'],
     optionsSuccessStatus: 200  // For legacy browser support
 }
