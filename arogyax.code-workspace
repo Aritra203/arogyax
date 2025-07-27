@@ -1,0 +1,60 @@
+{
+  "folders": [
+    {
+      "name": "Frontend",
+      "path": "./frontend"
+    },
+    {
+      "name": "Admin Panel", 
+      "path": "./admin"
+    },
+    {
+      "name": "Backend",
+      "path": "./backend"
+    }
+  ],
+  "settings": {
+    "css.validate": false,
+    "less.validate": false,
+    "scss.validate": false,
+    "tailwindCSS.includeLanguages": {
+      "css": "css",
+      "html": "HTML",
+      "javascript": "javascript",
+      "javascriptreact": "javascriptreact",
+      "typescript": "typescript",
+      "typescriptreact": "typescriptreact"
+    },
+    "tailwindCSS.experimental.classRegex": [
+      ["class:\\s*?[\"'`]([^\"'`]*).*?[\"'`]", "([a-zA-Z0-9\\-:]+)"],
+      ["(?:enter|leave)(?:From|To)?:\\s*?[\"'`]([^\"'`]*).*?[\"'`]", "([a-zA-Z0-9\\-:]+)"]
+    ],
+    "files.associations": {
+      "*.css": "tailwindcss"
+    },
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact",
+      "typescript": "typescriptreact"
+    },
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.autoClosingBrackets": "always",
+    "eslint.workingDirectories": ["frontend", "admin"],
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/build": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "bradlc.vscode-tailwindcss",
+      "esbenp.prettier-vscode", 
+      "ms-vscode.vscode-eslint",
+      "ms-vscode.vscode-json",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense"
+    ]
+  }
+}

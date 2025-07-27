@@ -12,6 +12,7 @@ import billingRouter from "./routes/billingRoute.js"
 import admissionRouter from "./routes/admissionRoute.js"
 import reportsRouter from "./routes/reportsRoute.js"
 import prescriptionRouter from "./routes/prescriptionRoute.js"
+import telemedicineRouter from "./routes/telemedicineRoute.js"
 
 // app config
 const app = express()
@@ -89,6 +90,7 @@ app.use("/api/billing", billingRouter)
 app.use("/api/admission", admissionRouter)
 app.use("/api/reports", reportsRouter)
 app.use("/api/prescription", prescriptionRouter)
+app.use("/api/telemedicine", telemedicineRouter)
 
 app.get("/", (req, res) => {
   res.send("API Working")

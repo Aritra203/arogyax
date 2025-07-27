@@ -8,6 +8,11 @@
     font-family: Outfit;
 }
 
+/* Fix for invalid image URLs */
+img[src=""], img[src="data:;base64,="], img:not([src]) {
+    display: none;
+}
+
 .active hr {
     @apply block
 }

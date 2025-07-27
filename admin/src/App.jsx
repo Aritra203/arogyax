@@ -14,12 +14,14 @@ import StaffManagement from './pages/Admin/StaffManagement';
 import InventoryManagement from './pages/Admin/InventoryManagement';
 import BillingManagement from './pages/Admin/BillingManagement';
 import AdmissionManagement from './pages/Admin/AdmissionManagement';
+import TelemedicineManagement from './pages/Admin/TelemedicineManagement';
 import ReportingDashboard from './pages/Admin/ReportingDashboard';
 import Login from './pages/Login';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorDashboard from './pages/Doctor/DoctorDashboard';
 import DoctorProfile from './pages/Doctor/DoctorProfile';
 import DoctorPrescriptions from './pages/Doctor/DoctorPrescriptions';
+import DoctorTelemedicine from './pages/Doctor/DoctorTelemedicine';
 
 const App = () => {
 
@@ -42,11 +44,13 @@ const App = () => {
           <Route path='/inventory-management' element={<InventoryManagement />} />
           <Route path='/billing-management' element={<BillingManagement />} />
           <Route path='/admission-management' element={<AdmissionManagement />} />
+          <Route path='/telemedicine-management' element={<TelemedicineManagement />} />
           <Route path='/reporting-dashboard' element={<ReportingDashboard />} />
           <Route path='/doctor-dashboard' element={<DoctorDashboard />} />
           <Route path='/doctor-appointments' element={<DoctorAppointments />} />
           <Route path='/doctor-prescriptions' element={<DoctorPrescriptions />} />
           <Route path='/doctor-profile' element={<DoctorProfile />} />
+          <Route path='/doctor-telemedicine' element={<DoctorTelemedicine />} />
         </Routes>
       </div>
     </div>

@@ -60,6 +60,7 @@ const Navbar = () => {
                 <div className='min-w-48 bg-gray-50 rounded flex flex-col gap-4 p-4'>
                   <p onClick={() => navigate('/my-profile')} className='hover:text-black cursor-pointer'>My Profile</p>
                   <p onClick={() => navigate('/my-appointments')} className='hover:text-black cursor-pointer'>My Appointments</p>
+                  <p onClick={() => navigate('/my-telemedicine')} className='hover:text-black cursor-pointer'>My Telemedicine</p>
                   <p onClick={() => navigate('/my-prescriptions')} className='hover:text-black cursor-pointer'>My Prescriptions</p>
                   <p onClick={() => navigate('/my-bills')} className='hover:text-black cursor-pointer'>My Bills</p>
                   <p onClick={logout} className='hover:text-black cursor-pointer'>Logout</p>

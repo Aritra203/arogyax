@@ -45,6 +45,10 @@ const Sidebar = () => {
           <img className='min-w-5' src={assets.patients_icon} alt='' />
           <p className='hidden md:block'>Admissions</p>
         </NavLink>
+        <NavLink to={'/telemedicine-management'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.appointment_icon} alt='' />
+          <p className='hidden md:block'>Telemedicine</p>
+        </NavLink>
         <NavLink to={'/reporting-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
           <img className='min-w-5' src={assets.list_icon} alt='' />
           <p className='hidden md:block'>Reports</p>
@@ -63,6 +67,10 @@ const Sidebar = () => {
         <NavLink to={'/doctor-prescriptions'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
           <img className='min-w-5' src={assets.list_icon} alt='' />
           <p className='hidden md:block'>Prescriptions</p>
+        </NavLink>
+        <NavLink to={'/doctor-telemedicine'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
+          <img className='min-w-5' src={assets.appointment_icon} alt='' />
+          <p className='hidden md:block'>Telemedicine</p>
         </NavLink>
         <NavLink to={'/doctor-profile'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${isActive ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}>
           <img className='min-w-5' src={assets.people_icon} alt='' />
