@@ -91,18 +91,32 @@ app.use(cors(corsOptions))
 // Additional CORS headers for preflight requests
 app.use((req, res, next) => {
     const origin = req.headers.origin;
+    console.log('🌐 Request details:', {
+        method: req.method,
+        origin: origin,
+        url: req.url,
+        headers: req.headers
+    });
+    
     if (origin && (origin.includes('arogyax') || origin.includes('arogya-x') || origin.includes('localhost'))) {
         res.header('Access-Control-Allow-Origin', origin);
+        console.log('✅ CORS headers set for origin:', origin);
     }
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, token, dtoken, atoken, aToken');
     res.header('Access-Control-Allow-Credentials', 'true');
     
     if (req.method === 'OPTIONS') {
+        console.log('🔄 Handling OPTIONS preflight request');
         res.sendStatus(200);
     } else {
         next();
     }
+});
+
+// CORS test endpoint
+app.patch('/api/test-cors', (req, res) => {
+    res.json({ success: true, message: 'CORS is working with PATCH method', timestamp: new Date().toISOString() });
 });
 
 // api endpoints
