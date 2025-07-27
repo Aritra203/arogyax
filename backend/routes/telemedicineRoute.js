@@ -45,6 +45,9 @@ telemedicineRouter.post('/doctor/reject-session/:sessionId', authDoctor, rejectS
 telemedicineRouter.get('/patient-sessions/:patientId', authUser, getPatientSessions);
 telemedicineRouter.post('/rate-session/:sessionId', authUser, rateSession);
 
+// General routes (accessible to both doctors and patients)
+telemedicineRouter.get('/pending-sessions', getPendingSessions);
+
 // Shared routes (both doctor and patient)
 telemedicineRouter.get('/session/:sessionId', getSession);
 telemedicineRouter.post('/join-session/:sessionId', joinSession);

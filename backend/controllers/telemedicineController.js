@@ -220,15 +220,17 @@ const addChatMessage = async (req, res) => {
 const getPatientSessions = async (req, res) => {
     try {
         const { patientId } = req.params;
+        console.log('Fetching sessions for patient:', patientId);
 
         const sessions = await telemedicineModel.find({ patient: patientId })
             .populate('doctor', 'name speciality image')
             .populate('appointmentId')
             .sort({ scheduledTime: -1 });
 
+        console.log('Found sessions:', sessions.length);
         res.json({ success: true, sessions });
     } catch (error) {
-        console.log(error);
+        console.log('Error in getPatientSessions:', error);
         res.json({ success: false, message: error.message });
     }
 };

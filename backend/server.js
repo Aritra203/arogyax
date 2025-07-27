@@ -43,6 +43,7 @@ const corsOptions = {
             'http://localhost:5174',  // Frontend local  
             'http://localhost:5175',  // Frontend local (new port)
             'http://localhost:5176',  // Admin panel local (new port)
+            'http://localhost:5177',  // Admin panel local (new port)
             'https://arogyax.vercel.app',  // Frontend production
             'https://arogyax-admin.vercel.app',  // Admin panel production
             'https://arogya-x-admin.vercel.app',  // Alternative admin domain
@@ -53,7 +54,8 @@ const corsOptions = {
             'https://arogyax-frontend.onrender.com',  // Frontend on Render
             // Add more Vercel variations
             'https://arogyax-git-main.vercel.app',
-            'https://arogyax-aritra203.vercel.app'
+            'https://arogyax-aritra203.vercel.app',
+            'https://arogyax-git-main-aritra203.vercel.app'
         ];
         
         // Check if origin is in allowed list
