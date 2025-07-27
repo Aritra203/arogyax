@@ -180,15 +180,6 @@ const MyTelemedicine = () => {
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
                     <div className='bg-white p-6 rounded-lg max-w-md w-full mx-4'>
                         <h3 className='text-lg font-semibold mb-4'>Book Telemedicine Session</h3>
-                        
-                        {/* Debug info */}
-                        <div className='mb-4 p-2 bg-gray-100 rounded text-xs'>
-                            <p>Backend: {backendUrl}</p>
-                            <p>Available Doctors: {doctors?.length || 0}</p>
-                            <p>User ID: {userData?._id ? 'Available' : 'Missing'}</p>
-                            <p>Token: {token ? 'Available' : 'Missing'}</p>
-                        </div>
-                        
                         <form onSubmit={createNewSession}>
                             <div className='mb-4'>
                                 <label className='block text-sm font-medium mb-2'>Select Doctor</label>

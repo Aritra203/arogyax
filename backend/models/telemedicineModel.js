@@ -14,12 +14,12 @@ const telemedicineSchema = new mongoose.Schema({
     appointmentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'appointment',
-        required: true
+        required: false  // Made optional for direct sessions
     },
     sessionType: {
         type: String,
-        enum: ['video', 'audio', 'chat'],
-        default: 'video'
+        enum: ['video', 'audio', 'chat', 'consultation', 'follow-up', 'emergency'],
+        default: 'consultation'
     },
     sessionStatus: {
         type: String,
