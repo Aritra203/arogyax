@@ -5,7 +5,23 @@
   <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
   <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" alt="Express">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
-  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for<img src="https://github.com/Aritra203.pn<img src="https://via.placeholder.com/100x100/7c3aed/ffffff?text=AD" width="100px;" alt="Aditi Das"/>
+<br />
+<sub><b>Aditi Das</b></sub>
+<br />
+<span>📊 UI/UX Designer</span>
+<br />
+<small>College Roll: 2022104</small>
+<br />
+<small>University Roll: CU2022104</small>"100px;" alt="Aritra Konar"/>
+<br />
+<sub><b>Aritra Konar</b></sub>
+<br />
+<span>🚀 Project Lead & Full Stack Developer</span>
+<br />
+<small>College Roll: 2022001</small>
+<br />
+<small>University Roll: CU2022001</small>e&logo=node.js&logoColor=white" alt="Node.js">
 </div>
 
 ## 🌟 Overview
@@ -569,6 +585,103 @@ DEBUG=false
 - **Access Logging**: Complete audit trail
 - **User Permissions**: Granular access control
 - **Data Backup**: Regular automated backups
+
+## 👥 Contributors
+
+### **Project Team**
+
+<table>
+<tr>
+<td align="center">
+<img src="https://github.com/Aritra203.png" width="100px;" alt="Aritra Konar"/>
+<br />
+<sub><b>Aritra Konar</b></sub>
+<br />
+<span>� Project Lead & Full Stack Developer</span>
+<br />
+<small>College Roll: 20223037</small>
+<br />
+<small>University Roll: 222260240146</small>
+</td>
+<td align="center">
+<img src="https://github.com/rajdip29.png" width="100px;" alt="Rajdip Dutta"/>
+<br />
+<sub><b>Rajdip Dutta</b></sub>
+<br />
+<span>💻 Backend Developer</span>
+<br />
+<small>College Roll: 20223034</small>
+<br />
+<small>University Roll: 222260240143</small>
+</td>
+<td align="center">
+<img src="https://via.placeholder.com/100x100/059669/ffffff?text=IS" width="100px;" alt="Indranil Saha"/>
+<br />
+<sub><b>Indranil Saha</b></sub>
+<br />
+<span>🎨 Frontend Developer</span>
+<br />
+<small>College Roll: 20223035</small>
+<br />
+<small>University Roll: 222260240144</small>
+</td>
+<td align="center">
+<img src="https://github.com/Abhijit965.png" width="100px;" alt="Abhijit Kayal"/>
+<br />
+<sub><b>Abhijit Kayal</b></sub>
+<br />
+<span>🗄️ Database Designer</span>
+<br />
+<small>College Roll: 20223036</small>
+<br />
+<small>University Roll: 222260240145</small>
+</td>
+<td align="center">
+<img src="https://github.com/daditi76.png" width="100px;" alt="Aditi Das"/>
+<br />
+<sub><b>Aditi Das</b></sub>
+<br />
+<span> UI/UX Designer</span>
+<br />
+<small>College Roll: 20223038</small>
+<br />
+<small>University Roll: 222260240147</small>
+</td>
+</tr>
+</table>
+
+### **Contributor Roles & Responsibilities**
+
+#### 🚀 **Project Lead - Aritra Konar**
+- Overall project architecture and design
+- Full-stack development coordination
+- Code review and quality assurance
+- Team leadership and project management
+
+#### 💻 **Backend Development - Rajdip Dutta**
+- API development and database integration
+- Authentication systems implementation
+- Server optimization and security
+- Backend testing frameworks
+
+#### 🎨 **Frontend Development - Indranil Saha**
+- React components development
+- Responsive design implementation
+- User interface optimization
+- Frontend state management
+
+#### 🗄️ **Database Design - Abhijit Kayal**
+- MongoDB schema design and data modeling
+- Database performance optimization
+- Data architecture and relationships
+- Query optimization and indexing
+
+#### 📊 **UI/UX Design - Aditi Das**
+- User interface design and prototyping
+- User experience optimization
+- Design systems and guidelines
+- Visual design and branding
+
 
 ## 🤝 Contributing
 
