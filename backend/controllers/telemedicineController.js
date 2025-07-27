@@ -341,13 +341,16 @@ const approveSession = async (req, res) => {
         const { sessionId } = req.params;
         const { approvalNotes } = req.body;
 
+        // Determine who approved (admin or doctor)
+        const approvedBy = req.user?._id || req.admin?._id || 'admin';
+
         const session = await telemedicineModel.findByIdAndUpdate(
             sessionId,
             { 
                 sessionStatus: 'approved',
                 approvalNotes,
                 approvedAt: new Date(),
-                approvedBy: req.user._id || req.admin._id
+                approvedBy: approvedBy
             },
             { new: true }
         ).populate('doctor', 'name speciality')
@@ -370,13 +373,16 @@ const rejectSession = async (req, res) => {
         const { sessionId } = req.params;
         const { rejectionReason } = req.body;
 
+        // Determine who rejected (admin or doctor)
+        const rejectedBy = req.user?._id || req.admin?._id || 'admin';
+
         const session = await telemedicineModel.findByIdAndUpdate(
             sessionId,
             { 
                 sessionStatus: 'rejected',
                 rejectionReason,
                 rejectedAt: new Date(),
-                rejectedBy: req.user._id || req.admin._id
+                rejectedBy: rejectedBy
             },
             { new: true }
         ).populate('doctor', 'name speciality')
