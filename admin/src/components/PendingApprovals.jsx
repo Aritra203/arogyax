@@ -16,8 +16,8 @@ const PendingApprovals = () => {
         setLoading(true);
         console.log('Fetching sessions from:', backendUrl + '/api/telemedicine/pending-sessions');
         try {
-            const response = await axios.get(backendUrl + '/api/telemedicine/pending-sessions', {
-                headers: { Authorization: 'Bearer ' + aToken }
+            const response = await axios.get(backendUrl + '/api/telemedicine/admin/pending-sessions', {
+                headers: { aToken }
             });
             console.log('Fetch response:', response.data);
             const validSessions = response.data.sessions ? response.data.sessions.filter(s => s && s._id) : [];
@@ -44,7 +44,7 @@ const PendingApprovals = () => {
             
             const response = await axios.patch(endpoint, 
                 { notes: action + 'd by admin' },
-                { headers: { Authorization: 'Bearer ' + aToken } }
+                { headers: { aToken } }
             );
             
             console.log('Response:', response.data);
