@@ -23,10 +23,26 @@ const DoctorApprovals = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                // Filter for sessions assigned to this doctor
-                const doctorSessions = data.sessions.filter(session => 
-                    session.doctor._id === localStorage.getItem('doctorId')
-                );
+                console.log('Received sessions data:', data.sessions);
+                
+                // Filter for sessions assigned to this doctor with comprehensive safety checks
+                const doctorSessions = data.sessions.filter(session => {
+                    const doctorId = localStorage.getItem('doctorId');
+                    const hasValidSession = session && 
+                                          session.doctor && 
+                                          session.doctor._id && 
+                                          session.patient &&
+                                          session.patient._id;
+                    
+                    if (!hasValidSession) {
+                        console.warn('Invalid session data:', session);
+                        return false;
+                    }
+                    
+                    return session.doctor._id === doctorId;
+                });
+                
+                console.log('Filtered doctor sessions:', doctorSessions.length);
                 setPendingSessions(doctorSessions);
             } else {
                 toast.error('Failed to fetch pending sessions');
@@ -140,7 +156,9 @@ const DoctorApprovals = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {pendingSessions.map((session) => (
+                                {pendingSessions.filter(session => 
+                                    session && session._id && session.patient && session.doctor
+                                ).map((session) => (
                                     <tr key={session._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">
